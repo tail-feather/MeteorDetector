@@ -17,7 +17,7 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: dist
+        name: dist-macOS
         path: dist/
   publish_ubuntu:
     runs-on: ubuntu-latest
@@ -35,7 +35,7 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: dist
+        name: dist-ubuntu
         path: dist/
   publish_win:
     runs-on: windows-latest
@@ -53,5 +53,5 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: dist
+        name: dist-win
         path: dist/
