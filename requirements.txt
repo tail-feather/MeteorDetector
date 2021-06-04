@@ -1,0 +1,5 @@
+altgraph>=0.17
+numpy>=1.20.3
+opencv-python-headless>=4.5.2.52
+pyinstaller>=4.3
+PySide2>=5.15.2

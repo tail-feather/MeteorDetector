@@ -1,0 +1,57 @@
+on: [push]
+
+jobs:
+  publish_mac:
+    runs-on: macos-latest
+    name: publish macOS app image
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup Python
+      uses: actions/setup-python@master
+      with: { python-version: 3.9 }
+    - name: Install dependencies
+      run: python -m pip install -r requirements.txt
+    - name: Run pyinstaller
+      run : pyinstaller main.spec
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: dist
+        path: dist/
+  publish_ubuntu:
+    runs-on: ubuntu-latest
+    name: publish Ubuntu executable image
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup Python
+      uses: actions/setup-python@master
+      with: { python-version: 3.9 }
+    - name: Install dependencies
+      run: python -m pip install -r requirements.txt
+    - name: Run pyinstaller
+      run : pyinstaller main.spec
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: dist
+        path: dist/
+  publish_win:
+    runs-on: windows-latest
+    name: publish win32 exe image
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup Python
+      uses: actions/setup-python@master
+      with: { python-version: 3.9 }
+    - name: Install dependencies
+      run: python -m pip install -r requirements.txt
+    - name: Run pyinstaller
+      run : pyinstaller main.spec
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: dist
+        path: dist/
