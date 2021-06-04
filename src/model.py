@@ -9,6 +9,7 @@ from PySide2.QtCore import QModelIndex
 from PySide2.QtCore import QObject
 from PySide2.QtCore import QUrl
 from PySide2.QtGui import QColor
+from PySide2.QtGui import QPalette
 
 
 class FetchObject:
@@ -191,7 +192,8 @@ class AbstractItemModel(QAbstractItemModel):
 
 
 
-HIGHLIGHT_COLOR = 0xbef5cb
+HIGHLIGHT_COLOR_LIGHT = 0xbef5cb
+HIGHLIGHT_COLOR_DARK = 0x3fb950
 DEFAULT_COLOR = 0xffffff
 
 
@@ -202,6 +204,8 @@ class JPEGFileListModel(AbstractItemModel):
         self.highlighted = set()
         self.context = {}
         self.column = FetchObject(3)
+        self.palette = QPalette()
+        self.isLightMode = self.palette.window().color().lightness() > 127
 
     def fileList(self) -> list[str]:
         return self._fileList
@@ -275,9 +279,12 @@ class JPEGFileListModel(AbstractItemModel):
                 return super().data(index, role)
             filepath = self._fileList[row]
             if filepath in self.highlighted:
-                return QColor(HIGHLIGHT_COLOR)
+                if self.isLightMode:
+                    return QColor(HIGHLIGHT_COLOR_LIGHT)
+                else:
+                    return QColor(HIGHLIGHT_COLOR_DARK)
             else:
-                return QColor(DEFAULT_COLOR)
+                return self.palette.base().color()
         elif role == Qt.DisplayRole:
             column = index.column()
             filepath = self._fileList[row]
