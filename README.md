@@ -4,7 +4,7 @@
 
 流星群画像の中から流星の流れている画像の抽出を試みるツール。
 
-![index.png](https://raw.githubusercontent.com/tail-feathre/MeteorDetector/docs/img/index.png)
+![index.png](https://github.com/tail-feather/MeteorDetector/raw/master/docs/img/index.png)
 
 ## Usage
 
@@ -24,7 +24,7 @@ or
 
 Proc/Config (Linux/Windows), Preferences... `Cmd+,` (Mac) から各パラメータを設定可能。
 
-![config](https://raw.githubusercontent.com/tail-feathre/MeteorDetector/docs/img/config.png)
+![config](https://github.com/tail-feather/MeteorDetector/raw/master/docs/img/config.png)
 
 * cv2.threshold
     * Threshold: しきい値
@@ -41,16 +41,16 @@ Proc/Config (Linux/Windows), Preferences... `Cmd+,` (Mac) から各パラメー�
 
 オリジナル画像。
 
-![original preview](https://raw.githubusercontent.com/tail-feathre/MeteorDetector/docs/img/original.png)
+![original preview](https://github.com/tail-feather/MeteorDetector/raw/master/docs/img/original.png)
 
 #### Threshold
 
 しきい値処理を適用した画像。
 
-![threshold preview](https://raw.githubusercontent.com/tail-feathre/MeteorDetector/docs/img/threshold.png)
+![threshold preview](https://github.com/tail-feather/MeteorDetector/raw/master/docs/img/threshold.png)
 
 #### Filled
 
 検知した面積のある領域を塗りつぶした画像。
 
-![filled preview](https://raw.githubusercontent.com/tail-feathre/MeteorDetector/docs/img/filled.png)
+![filled preview](https://github.com/tail-feather/MeteorDetector/raw/master/docs/img/filled.png)
