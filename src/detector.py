@@ -64,12 +64,12 @@ def clamp(v: T, min_v: T, max_v: T) -> T:
 BoundingRect = tuple[tuple[float, float], tuple[float, float]]
 
 
-def fill_area(img: numpy.array, contours: list[numpy.array], buffer_ratio: float = 0.01, color: typing.Optional[float] = None) -> numpy.array:
+def fill_area(img: numpy.array, contours: list[numpy.array], buffer_ratio: float = 1.1, color: typing.Optional[float] = None) -> numpy.array:
     """
     領域の外接矩形で塗りつぶす
     :param img: 入力画像
     :param contours: 領域リスト
-    :param buffer_ratio: バッファ率 (e.g. 6000 * 0.01 => 60px)
+    :param buffer_ratio: バッファ拡張率
     :param color: 塗りつぶしの色（未指定の場合は入力画像の中央値で塗りつぶす）
     :return: 塗りつぶし後の画像
     """
@@ -81,7 +81,19 @@ def fill_area(img: numpy.array, contours: list[numpy.array], buffer_ratio: float
         color = numpy.median(img)
     # fill bounding rect
     for cnt in contours:
-        img = cv2.fillPoly(img, pts=[numpy.asarray([x[0] for x in cnt])], color=(color,))
+        hull = cv2.convexHull(cnt)
+        M = cv2.moments(hull)
+        cx = M["m10"] / M["m00"]
+        cy = M["m01"] / M["m00"]
+        temp = []
+        for c in hull:
+            x, y = c[0]
+            vx = x - cx
+            vy = y - cy
+            x = clamp(vx * buffer_ratio + cx, 0, width)
+            y = clamp(vy * buffer_ratio + cy, 0, height)
+            temp.append([int(x), int(y)])
+        img = cv2.fillPoly(img, pts=[numpy.asarray(temp)], color=(color,))
     return img
 
 
@@ -99,20 +111,21 @@ def line_length(line: numpy.array) -> float:
     return math.sqrt(dx * dx + dy * dy)
 
 
-def detect_meteor(filepath: str, input_threshold: float = 127, input_maxvalue: float = 255, area_threshold: float = 0.0001, line_threshold: float = 100) -> typing.Optional[tuple[list[numpy.array], list[BoundingRect], tuple[int, int]]]:
+def detect_meteor(filepath: str, input_threshold: float = 127, input_maxvalue: float = 255, area_threshold: float = 0.0001, buffer_ratio: float = 1.1, line_threshold: float = 100) -> typing.Optional[tuple[list[numpy.array], list[BoundingRect], tuple[int, int]]]:
     """
     流星の検出
     :param str filepath: 入力画像ファイルパス
     :param float input_threshold: 画像のしきい値処理
     :param float input_maxvalue: 画像のしきい値処理最大値
     :param float area_threshold: 面積のある領域検知用閾値（`detect_area()`関数`threshold`参照）
+    :param float buffer_ratio: 面積拡張率
     :param float line_threshold: 検出した直線を流星と判定する最小の長さ
     :return: (検出した直線 or None, 塗りつぶした領域 or None)
     """
     img = load_binary(filepath, input_threshold, input_maxvalue)
     area_contours = detect_area(img, area_threshold)
     if area_contours:
-        img = fill_area(img, area_contours, color=0)
+        img = fill_area(img, area_contours, buffer_ratio=buffer_ratio, color=0)
     lines = detect_lines(img)
     if lines is not None:
         line_lengthes = [line_length(x) for x in lines]
@@ -130,6 +143,7 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--input-threshold", type=float, default=127)
     parser.add_argument("--input-maxvalue", type=float, default=255)
     parser.add_argument("--area-threshold", type=float, default=0.0001)
+    parser.add_argument("--buffer-ratio", type=float, default=1.1)
     parser.add_argument("--line-threshold", type=float, default=100)
 
     args = parser.parse_args(argv[1:])
@@ -137,14 +151,21 @@ def main(argv: list[str]) -> int:
     # 拡張子が`.jpg`の画像リストを作成
     image_list = []
     for dirname, _, filenames in os.walk(args.directory):
-        image_list.extend([os.path.join(dirname, x) for x in filenames if x.lower().endswith(".jpg")])
+        image_list.extend([os.path.join(dirname, x) for x in filenames if x.lower().endswith(".jpg") or x.lower().endswith(".jpeg")])
     image_list.sort()
 
     # 流星の写っていると思われる画像を抽出
     result = []
     for filepath in tqdm(image_list):
         filepath = str(filepath)
-        lines, _, _ = detect_meteor(filepath, args.input_threshold, args.input_maxvalue, args.area_threshold, args.line_threshold)
+        lines, _, _ = detect_meteor(
+            filepath,
+            args.input_threshold,
+            args.input_maxvalue,
+            args.area_threshold,
+            args.buffer_ratio,
+            args.line_threshold
+        )
         if lines is not None:
             result.append((filepath, lines))
     print("detected: {}/{}".format(len(result), len(image_list)))

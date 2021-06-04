@@ -85,8 +85,8 @@ class Ui_ConfigDialog(object):
         self.doubleSpinBox_fillarea_fillbuffer = QDoubleSpinBox(self.groupBox_fillarea)
         self.doubleSpinBox_fillarea_fillbuffer.setObjectName(u"doubleSpinBox_fillarea_fillbuffer")
         self.doubleSpinBox_fillarea_fillbuffer.setDecimals(1)
-        self.doubleSpinBox_fillarea_fillbuffer.setMaximum(50.000000000000000)
-        self.doubleSpinBox_fillarea_fillbuffer.setValue(1.000000000000000)
+        self.doubleSpinBox_fillarea_fillbuffer.setMaximum(5.000000000000000)
+        self.doubleSpinBox_fillarea_fillbuffer.setValue(1.100000000000000)
 
         self.formLayout_2.setWidget(1, QFormLayout.FieldRole, self.doubleSpinBox_fillarea_fillbuffer)
 
@@ -130,7 +130,7 @@ class Ui_ConfigDialog(object):
         self.label_fillarea_areathreshold.setText(QCoreApplication.translate("ConfigDialog", u"AreaThreshold:", None))
         self.doubleSpinBox_fillarea_areathreshold.setSuffix(QCoreApplication.translate("ConfigDialog", u"%", None))
         self.label_fillarea_fillbuffer.setText(QCoreApplication.translate("ConfigDialog", u"FillBuffer:", None))
-        self.doubleSpinBox_fillarea_fillbuffer.setSuffix(QCoreApplication.translate("ConfigDialog", u"%", None))
+        self.doubleSpinBox_fillarea_fillbuffer.setSuffix(QCoreApplication.translate("ConfigDialog", u"x", None))
         self.groupBox.setTitle(QCoreApplication.translate("ConfigDialog", u"MeteorDetection", None))
         self.label_meteordetection_linethreshold.setText(QCoreApplication.translate("ConfigDialog", u"LineThreshold:", None))
         self.doubleSpinBox_meteordetection_linethreshold.setSuffix(QCoreApplication.translate("ConfigDialog", u"px", None))

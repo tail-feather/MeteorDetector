@@ -64,7 +64,14 @@ class MeteorDetectWorker(Worker):
             if not os.path.exists(filepath):
                 continue
             try:
-                lines, contours, shape = detect_meteor(filepath, input_threshold=self.config.input_threshold, input_maxvalue=self.config.input_maxvalue, area_threshold=self.config.area_threshold, line_threshold=self.config.line_threshold)
+                lines, contours, shape = detect_meteor(
+                    filepath,
+                    input_threshold=self.config.input_threshold,
+                    input_maxvalue=self.config.input_maxvalue,
+                    area_threshold=self.config.area_threshold,
+                    buffer_ratio=self.config.buffer_ratio,
+                    line_threshold=self.config.line_threshold
+                )
                 self.updateContext.emit(filepath, shape, contours, lines)
             except:
                 buf = io.StringIO()

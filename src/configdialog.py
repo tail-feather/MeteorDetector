@@ -15,7 +15,8 @@ from .ui.configdialog import Ui_ConfigDialog
 
 class Config:
     def __init__(self, input_threshold: float = 127,
-                 area_threshold: float = 0.0001, buffer_ratio: float = 0.01,
+                 area_threshold: float = 0.0001,
+                 buffer_ratio: float = 1.1,
                  line_threshold: float = 100):
         self.input_threshold = input_threshold
         self.input_maxvalue = 255
@@ -38,7 +39,7 @@ class Config:
         self.input_threshold = data.get("input", {}).get("threshold", 127)
         self.input_maxvalue = data.get("input", {}).get("maxvalue", 255)
         self.area_threshold = data.get("area", {}).get("threshold", 0.0001)
-        self.buffer_ratio = data.get("area", {}).get("buffer", 0.01)
+        self.buffer_ratio = data.get("area", {}).get("buffer", 1.1)
         self.line_threshold = data.get("line", {}).get("threshold", 100)
 
     def save(self, filepath: str):
@@ -92,7 +93,7 @@ class ConfigDialog(QDialog):
         self.ui.spinBox_threshold_threshold.setValue(config.input_threshold)
         self.ui.spinBox_threshold_maxvalue.setValue(config.input_maxvalue)
         self.ui.doubleSpinBox_fillarea_areathreshold.setValue(config.area_threshold * 100)
-        self.ui.doubleSpinBox_fillarea_fillbuffer.setValue(config.buffer_ratio * 100)
+        self.ui.doubleSpinBox_fillarea_fillbuffer.setValue(config.buffer_ratio)
         self.ui.doubleSpinBox_meteordetection_linethreshold.setValue(config.line_threshold)
 
     def updateConfig(self):
@@ -102,7 +103,7 @@ class ConfigDialog(QDialog):
         self.config.input_threshold = self.ui.spinBox_threshold_threshold.value()
         self.config.input_maxvalue = self.ui.spinBox_threshold_maxvalue.value()
         self.config.area_threshold = self.ui.doubleSpinBox_fillarea_areathreshold.value() / 100  # % -> ratio
-        self.config.buffer_ratio = self.ui.doubleSpinBox_fillarea_fillbuffer.value() / 100  # % -> ratio
+        self.config.buffer_ratio = self.ui.doubleSpinBox_fillarea_fillbuffer.value()
         self.config.line_threshold = self.ui.doubleSpinBox_meteordetection_linethreshold.value()
 
     def getConfig(self):
